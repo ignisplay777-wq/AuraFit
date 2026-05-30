@@ -421,12 +421,14 @@ function initOnboarding() {
     const googleBtn = document.getElementById('onb-google-btn');
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => {
-                console.error('Login error:', err);
-                alert('Error al iniciar sesión. Intenta de nuevo.');
+                showAuthLoading();
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).catch(err => {
+                    hideAuthLoading();
+                    console.error('Login error:', err);
+                    alert('Error al iniciar sesión. Intenta de nuevo.');
+                });
             });
-        });
     }
 }
 
@@ -1248,6 +1250,38 @@ function renderAchievements() {
 // ============================================================
 // INICIO
 // ============================================================
+// ============================================================
+// PANTALLA DE CARGA
+// ============================================================
+
+function hideLoadingScreen() {
+    const screen = document.getElementById('loading-screen');
+    if (!screen) return;
+    screen.classList.add('fade-out');
+    setTimeout(() => { screen.style.display = 'none'; }, 500);
+}
+
+function updateLoadingLabel(text) {
+    const lbl = document.getElementById('loading-label');
+    if (lbl) lbl.textContent = text;
+}
+
+function showAuthLoading() {
+    const el = document.getElementById('auth-loading-overlay');
+    if (el) {
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'all';
+    }
+}
+
+function hideAuthLoading() {
+    const el = document.getElementById('auth-loading-overlay');
+    if (el) {
+        el.style.opacity = '0';
+        el.style.pointerEvents = 'none';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     applyTheme(appState.colorTheme || 'emerald');
     initOnboarding();
@@ -1259,6 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Firebase auth state listener — se ejecuta al cargar y al hacer login/logout
     auth.onAuthStateChanged(async (user) => {
         if (user) {
+            updateLoadingLabel('Cargando tu perfil...');
             // Usuario logueado: cargar datos desde Firestore
             try {
                 const doc = await db.collection('users').doc(user.uid).get();
@@ -1294,10 +1329,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAppState();
             }
             hideModal('onboarding-modal');
+            hideAuthLoading();
             applyTheme(appState.colorTheme || 'emerald');
             renderAll();
+            hideLoadingScreen();
         } else {
-            // No hay sesión: mostrar login
+            // No hay sesión: ocultar carga y mostrar login
+            hideAuthLoading();
+            hideLoadingScreen();
             showModal('onboarding-modal');
         }
     });

@@ -13,8 +13,40 @@
 </head>
 <body class="bg-[#09090b] text-zinc-100 font-['Plus_Jakarta_Sans'] antialiased selection:bg-emerald-500/30 selection:text-emerald-400 min-h-screen relative overflow-x-hidden">
 
+    <!-- PANTALLA DE CARGA -->
+    <div id="loading-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#09090b]">
+        <div class="flex flex-col items-center gap-6 px-8 w-full max-w-xs">
+            <!-- Logo animado -->
+            <div class="w-16 h-16 rounded-2xl btn-accent flex items-center justify-center text-zinc-950 shadow-2xl loading-logo-pulse">
+                <i class="ph ph-sparkles text-3xl font-bold"></i>
+            </div>
+            <p class="text-zinc-100 font-bold text-lg tracking-tight">AuraFit</p>
+
+            <!-- Barra arcoiris -->
+            <div class="w-full">
+                <div class="h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden">
+                    <div id="loading-bar" class="h-full rounded-full loading-rainbow-bar" style="width: 0%"></div>
+                </div>
+                <p id="loading-label" class="text-xs text-zinc-500 mt-3 text-center tracking-wide">Cargando...</p>
+            </div>
+        </div>
+    </div>
+
     <div id="spotlight-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full blur-[120px] pointer-events-none opacity-60 transition-all duration-1000"></div>
     <div id="spotlight-2" class="absolute top-[40%] right-[-10%] w-[40vw] h-[40vw] rounded-full blur-[120px] pointer-events-none opacity-40 transition-all duration-1000"></div>
+
+    <!-- OVERLAY CARGA GOOGLE LOGIN -->
+    <div id="auth-loading-overlay" class="fixed inset-0 z-[90] flex flex-col items-end justify-end bg-[#09090b]/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="w-full px-0 pb-0">
+            <div class="h-1 w-full bg-zinc-800 overflow-hidden">
+                <div id="auth-loading-bar" class="h-full loading-rainbow-bar auth-bar-animate" style="width: 100%"></div>
+            </div>
+            <div class="flex items-center justify-center gap-2 py-3 bg-zinc-900/80 border-t border-zinc-800">
+                <div class="w-4 h-4 rounded-full loading-dot-pulse" style="background: var(--accent)"></div>
+                <span class="text-xs text-zinc-400 font-medium">Conectando con Google...</span>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL ONBOARDING / LOGIN -->
     <div id="onboarding-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl transition-all duration-500 opacity-0 pointer-events-none">
