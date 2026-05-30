@@ -2,6 +2,22 @@
    AuraFit v2 — app.js
    ============================================================ */
 
+// ============================================================
+// FIREBASE CONFIG & AUTH
+// ============================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyAqMiSsf2zQ0h15lkeBzoNeDKEphK4Aer0",
+    authDomain: "aurafit-c1a7b.firebaseapp.com",
+    projectId: "aurafit-c1a7b",
+    storageBucket: "aurafit-c1a7b.firebasestorage.app",
+    messagingSenderId: "246832653452",
+    appId: "1:246832653452:web:b601739d36f228ca9a47a9",
+    measurementId: "G-545X3QPF67"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 const COLOR_THEMES = [
     { id: 'emerald', label: 'Esmeralda', accent: '#10b981', light: '#34d399', dark: '#059669', spotlight1: 'rgba(16,185,129,0.12)', spotlight2: 'rgba(139,92,246,0.08)' },
     { id: 'violet',  label: 'Violeta',   accent: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed', spotlight1: 'rgba(139,92,246,0.12)', spotlight2: 'rgba(16,185,129,0.08)' },
@@ -56,6 +72,10 @@ function fmtKey(d) {
 
 function saveAppState() {
     localStorage.setItem('aurafit_pro_state_v2', JSON.stringify(appState));
+    const user = auth.currentUser;
+    if (user) {
+        db.collection('users').doc(user.uid).set(appState).catch(e => console.error('Firestore save error:', e));
+    }
 }
 
 function loadAppState() {
@@ -398,22 +418,16 @@ function checkOnboarding() {
 }
 
 function initOnboarding() {
-    document.getElementById('onb-save-btn').addEventListener('click', () => {
-        const name = document.getElementById('onb-username').value.trim();
-        if (!name) {
-            document.getElementById('onb-username').focus();
-            document.getElementById('onb-username').classList.add('border-rose-500');
-            return;
-        }
-        appState.username = name;
-        saveAppState();
-        hideModal('onboarding-modal');
-        renderAll();
-    });
-    document.getElementById('onb-username').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('onb-save-btn').click();
-        document.getElementById('onb-username').classList.remove('border-rose-500');
-    });
+    const googleBtn = document.getElementById('onb-google-btn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => {
+                console.error('Login error:', err);
+                alert('Error al iniciar sesión. Intenta de nuevo.');
+            });
+        });
+    }
 }
 
 function openConfig() {
@@ -457,12 +471,24 @@ function initConfig() {
     });
 
     document.getElementById('cfg-reset-btn').addEventListener('click', () => {
-        showConfirm('¿Borrar todos los datos?', '⚠️ Esto eliminará permanentemente todo tu historial, progreso y configuración.', () => {
+        showConfirm('¿Borrar todos los datos?', '⚠️ Esto eliminará permanentemente todo tu historial, progreso y configuración.', async () => {
             localStorage.removeItem('aurafit_pro_state_v2');
             localStorage.removeItem('aurafit_pro_state');
+            const user = auth.currentUser;
+            if (user) {
+                await db.collection('users').doc(user.uid).delete().catch(() => {});
+            }
             location.reload();
         });
     });
+
+    // Botón cerrar sesión
+    const logoutBtn = document.getElementById('cfg-logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => location.reload());
+        });
+    }
 
     document.getElementById('cfg-export-btn').addEventListener('click', exportCSV);
 
@@ -951,12 +977,55 @@ function renderAchievements() {
 // INICIO
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    loadAppState();
     applyTheme(appState.colorTheme || 'emerald');
     initOnboarding();
     initConfig();
     initEditFoodModal();
     initEventListeners();
-    checkOnboarding();
-    renderAll();
+
+    // Firebase auth state listener — se ejecuta al cargar y al hacer login/logout
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            // Usuario logueado: cargar datos desde Firestore
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    // Migrar alimentos sin categoría ni macros
+                    if (data.history) {
+                        Object.keys(data.history).forEach(k => {
+                            if (data.history[k].foods) {
+                                data.history[k].foods = data.history[k].foods.map(f => ({
+                                    ...f,
+                                    category: f.category || 'almuerzo',
+                                    protein: f.protein || 0,
+                                    carbs: f.carbs || 0,
+                                    fat: f.fat || 0,
+                                }));
+                            }
+                        });
+                    }
+                    appState = { ...appState, ...data };
+                } else {
+                    // Primera vez: usar nombre de Google
+                    appState.username = user.displayName ? user.displayName.split(' ')[0] : 'Usuario';
+                    const todayKey = getTodayKey();
+                    if (!appState.history[todayKey]) {
+                        appState.history[todayKey] = { foods: [], water: 0, notes: '' };
+                    }
+                    saveAppState();
+                }
+            } catch(e) {
+                console.error('Error cargando datos:', e);
+                // Fallback a localStorage si hay error de red
+                loadAppState();
+            }
+            hideModal('onboarding-modal');
+            applyTheme(appState.colorTheme || 'emerald');
+            renderAll();
+        } else {
+            // No hay sesión: mostrar login
+            showModal('onboarding-modal');
+        }
+    });
 });
