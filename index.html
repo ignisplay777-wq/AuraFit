@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraFit — Calorie & Stats Tracker</title>
+    <title>AuraFit — Calorie & Macro Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -13,13 +13,10 @@
 </head>
 <body class="bg-[#09090b] text-zinc-100 font-['Plus_Jakarta_Sans'] antialiased selection:bg-emerald-500/30 selection:text-emerald-400 min-h-screen relative overflow-x-hidden">
 
-    <!-- Spotlights Ambientales -->
     <div id="spotlight-1" class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full blur-[120px] pointer-events-none opacity-60 transition-all duration-1000"></div>
     <div id="spotlight-2" class="absolute top-[40%] right-[-10%] w-[40vw] h-[40vw] rounded-full blur-[120px] pointer-events-none opacity-40 transition-all duration-1000"></div>
 
-    <!-- ======================== -->
-    <!-- MODAL ONBOARDING (1ra vez) -->
-    <!-- ======================== -->
+    <!-- MODAL ONBOARDING -->
     <div id="onboarding-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl transition-all duration-500 opacity-0 pointer-events-none">
         <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl max-w-sm w-full mx-4 shadow-2xl relative overflow-hidden text-center">
             <div class="absolute -top-10 -left-10 w-32 h-32 rounded-full blur-2xl" id="onb-glow"></div>
@@ -31,20 +28,16 @@
             <div class="space-y-3">
                 <input type="text" id="onb-username" placeholder="Tu nombre o apodo" maxlength="20"
                     class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-accent transition-all text-center font-semibold">
-                <button id="onb-save-btn"
-                    class="w-full btn-accent text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-lg">
+                <button id="onb-save-btn" class="w-full btn-accent text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-lg">
                     Guardar y Comenzar 🚀
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ======================== -->
-    <!-- MODAL CONFIGURACIÓN      -->
-    <!-- ======================== -->
+    <!-- MODAL CONFIGURACIÓN -->
     <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
         <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-md w-full mx-4 shadow-2xl overflow-hidden">
-            <!-- Header del modal -->
             <div class="flex items-center justify-between p-6 border-b border-zinc-800">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl btn-accent flex items-center justify-center text-zinc-950">
@@ -56,10 +49,7 @@
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>
-
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
-
-                <!-- Perfil -->
                 <section>
                     <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                         <i class="ph ph-user-circle text-base"></i> Perfil
@@ -82,21 +72,46 @@
                                     class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
                             </div>
                         </div>
+                        <!-- Metas de Macros -->
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-2">Metas de Macronutrientes (g/día) <span class="text-zinc-600">— opcional</span></label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="block text-[10px] text-emerald-400 mb-1">Proteínas</label>
+                                    <input type="number" id="cfg-protein" min="0" max="999" placeholder="150"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-amber-400 mb-1">Carbohidratos</label>
+                                    <input type="number" id="cfg-carbs" min="0" max="999" placeholder="200"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-blue-400 mb-1">Grasas</label>
+                                    <input type="number" id="cfg-fat" min="0" max="999" placeholder="65"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
-
-                <!-- Color del tema -->
                 <section>
                     <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                         <i class="ph ph-palette text-base"></i> Color del Tema
                     </h3>
-                    <div id="color-options" class="grid grid-cols-4 gap-2">
-                        <!-- Generado por JS -->
-                    </div>
+                    <div id="color-options" class="grid grid-cols-4 gap-2"></div>
                     <p class="text-xs text-zinc-600 mt-2">El color principal afecta botones, acentos y gráficas.</p>
                 </section>
-
-                <!-- Peligro -->
+                <section>
+                    <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <i class="ph ph-export text-base"></i> Exportar Datos
+                    </h3>
+                    <button id="cfg-export-btn"
+                        class="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 font-semibold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="ph ph-file-csv"></i> Exportar historial CSV
+                    </button>
+                    <p class="text-xs text-zinc-600 mt-1.5">Descarga tus datos para compartir con tu nutricionista.</p>
+                </section>
                 <section>
                     <h3 class="text-xs font-bold text-rose-500/70 uppercase tracking-widest mb-3 flex items-center gap-2">
                         <i class="ph ph-warning text-base"></i> Zona de Peligro
@@ -107,8 +122,6 @@
                     </button>
                 </section>
             </div>
-
-            <!-- Footer -->
             <div class="p-6 border-t border-zinc-800">
                 <button id="cfg-save-btn"
                     class="w-full btn-accent text-zinc-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
@@ -118,9 +131,62 @@
         </div>
     </div>
 
+    <!-- MODAL CONFIRMACIÓN RESET -->
+    <div id="confirm-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full mx-4 p-6 shadow-2xl text-center">
+            <div class="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-400 mx-auto mb-4">
+                <i class="ph ph-warning text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-zinc-100 mb-2" id="confirm-title">¿Estás seguro?</h3>
+            <p class="text-sm text-zinc-400 mb-6" id="confirm-msg">Esta acción no se puede deshacer.</p>
+            <div class="flex gap-3">
+                <button id="confirm-cancel" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold py-2.5 rounded-xl text-sm transition-all">Cancelar</button>
+                <button id="confirm-ok" class="flex-1 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-400 font-bold py-2.5 rounded-xl text-sm transition-all">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR ALIMENTO -->
+    <div id="edit-food-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full mx-4 p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="font-bold text-zinc-100 flex items-center gap-2"><i class="ph ph-pencil text-accent"></i> Editar Alimento</h3>
+                <button id="edit-food-close" class="text-zinc-500 hover:text-zinc-200 transition-colors"><i class="ph ph-x text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1.5">Nombre</label>
+                    <input type="text" id="edit-food-name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1.5">Calorías (kcal)</label>
+                    <input type="number" id="edit-food-cals" min="1" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-emerald-400 mb-1">Proteínas (g)</label>
+                        <input type="number" id="edit-food-protein" min="0" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-amber-400 mb-1">Carbos (g)</label>
+                        <input type="number" id="edit-food-carbs" min="0" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-blue-400 mb-1">Grasas (g)</label>
+                        <input type="number" id="edit-food-fat" min="0" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                    </div>
+                </div>
+                <input type="hidden" id="edit-food-id">
+                <button id="edit-food-save" class="w-full btn-accent text-zinc-950 font-bold py-3 rounded-xl text-sm transition-all mt-2 flex items-center justify-center gap-2">
+                    <i class="ph ph-check-circle"></i> Guardar cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- CONTENIDO PRINCIPAL -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-        
+
         <!-- Header -->
         <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 transition-all duration-300 hover:border-zinc-700/50">
             <div class="flex items-center gap-4">
@@ -132,9 +198,13 @@
                     <p class="text-xl font-bold text-zinc-100" id="header-username">—</p>
                 </div>
             </div>
-            
             <div class="flex items-center gap-3">
-                <!-- Stats rápidos -->
+                <!-- Streak -->
+                <div id="streak-badge" class="hidden items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl">
+                    <i class="ph ph-flame-fill text-amber-400"></i>
+                    <span id="streak-count" class="text-sm font-bold text-amber-300">0</span>
+                    <span class="text-xs text-amber-500">días</span>
+                </div>
                 <div class="flex flex-wrap items-center gap-4 sm:gap-6 bg-zinc-950/50 p-3 rounded-2xl border border-zinc-800/40">
                     <div class="flex items-center gap-2">
                         <i class="ph ph-fire text-amber-500 text-xl"></i>
@@ -148,7 +218,6 @@
                         <span class="text-sm text-zinc-400">vasos</span>
                     </div>
                 </div>
-                <!-- Botón Config -->
                 <button id="open-config-btn" class="w-11 h-11 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center transition-all hover:scale-105 active:scale-95" title="Configuración">
                     <i class="ph ph-gear text-lg text-zinc-300"></i>
                 </button>
@@ -157,13 +226,14 @@
 
         <!-- GRID PRINCIPAL -->
         <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             <!-- COLUMNA IZQUIERDA -->
             <div class="md:col-span-1 flex flex-col gap-6">
-                <!-- Resumen de Calorías -->
+
+                <!-- Resumen de Calorías + Macros -->
                 <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden group">
-                    <h3 class="text-zinc-400 text-sm font-semibold tracking-wide uppercase mb-6">Resumen Calórico</h3>
-                    <div class="relative w-48 h-48 flex items-center justify-center">
+                    <h3 class="text-zinc-400 text-sm font-semibold tracking-wide uppercase mb-4">Resumen Calórico</h3>
+                    <div class="relative w-44 h-44 flex items-center justify-center">
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="40" stroke="#18181b" stroke-width="8" fill="transparent" />
                             <circle id="progress-circle" cx="50" cy="50" r="40" stroke="url(#accentGradient)" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" class="transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]" />
@@ -175,11 +245,11 @@
                             </defs>
                         </svg>
                         <div class="absolute text-center">
-                            <span id="cal-remaining" class="block text-4xl font-extrabold text-zinc-100 tracking-tight transition-all duration-300">0</span>
+                            <span id="cal-remaining" class="block text-3xl font-extrabold text-zinc-100 tracking-tight transition-all duration-300">0</span>
                             <span class="text-xs text-zinc-400 font-medium uppercase tracking-widest" id="cal-status-label">Restantes</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 w-full mt-6 pt-6 border-t border-zinc-800/60 text-center">
+                    <div class="grid grid-cols-2 gap-4 w-full mt-4 pt-4 border-t border-zinc-800/60 text-center">
                         <div>
                             <span class="text-xs text-zinc-400 block mb-0.5">Consumidas</span>
                             <span id="cal-consumed" class="text-lg font-bold text-accent">0 kcal</span>
@@ -189,18 +259,60 @@
                             <span id="cal-target-display" class="text-lg font-bold text-zinc-300">0 kcal</span>
                         </div>
                     </div>
+
+                    <!-- MACROS DONUT -->
+                    <div id="macros-section" class="w-full mt-4 pt-4 border-t border-zinc-800/60">
+                        <p class="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-3">Macros del día</p>
+                        <div class="space-y-2">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-emerald-400 font-semibold">Proteínas</span>
+                                    <span id="macro-protein-val" class="text-zinc-300 font-bold">0g</span>
+                                </div>
+                                <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                    <div id="macro-protein-bar" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full transition-all duration-700" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-amber-400 font-semibold">Carbohidratos</span>
+                                    <span id="macro-carbs-val" class="text-zinc-300 font-bold">0g</span>
+                                </div>
+                                <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                    <div id="macro-carbs-bar" class="h-full bg-gradient-to-r from-amber-600 to-amber-400 rounded-full transition-all duration-700" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-blue-400 font-semibold">Grasas</span>
+                                    <span id="macro-fat-val" class="text-zinc-300 font-bold">0g</span>
+                                </div>
+                                <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                    <div id="macro-fat-bar" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full transition-all duration-700" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="macros-hint" class="text-[10px] text-zinc-600 mt-2 text-center">Configura metas en ⚙️ para ver progreso</p>
+                    </div>
                 </div>
 
                 <!-- Registro de Agua -->
                 <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 relative">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2.5">
                             <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
                                 <i class="ph ph-drop-half text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-zinc-200">Registro de Agua</h3>
+                            <h3 class="font-bold text-zinc-200">Agua</h3>
                         </div>
                         <span id="water-counter" class="text-sm font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">0 / 0 vasos</span>
+                    </div>
+                    <!-- Barra de progreso agua -->
+                    <div class="mb-3">
+                        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                            <div id="water-progress-bar" class="h-full bg-gradient-to-r from-blue-700 to-blue-400 rounded-full transition-all duration-500" style="width:0%"></div>
+                        </div>
+                        <p id="water-pct-label" class="text-[10px] text-zinc-500 text-right mt-1">0%</p>
                     </div>
                     <div id="water-grid" class="grid grid-cols-4 gap-2 mb-4"></div>
                     <div class="flex gap-2">
@@ -210,35 +322,115 @@
                         <button id="btn-reset-water" class="bg-zinc-800 hover:bg-zinc-700 p-2.5 rounded-xl transition-all"><i class="ph ph-arrows-counter-clockwise text-lg"></i></button>
                     </div>
                 </div>
+
+                <!-- Streak / Logros -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-5">
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
+                            <i class="ph ph-trophy text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-zinc-200">Logros</h3>
+                    </div>
+                    <div class="flex items-center justify-between bg-zinc-950/60 border border-zinc-800 rounded-2xl p-3 mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="ph ph-flame-fill text-amber-400 text-xl"></i>
+                            <div>
+                                <p class="text-xs text-zinc-400">Racha activa</p>
+                                <p class="font-bold text-zinc-100"><span id="streak-days">0</span> días consecutivos</p>
+                            </div>
+                        </div>
+                        <div id="streak-flame" class="text-2xl">🔥</div>
+                    </div>
+                    <div id="achievements-list" class="space-y-1.5"></div>
+                </div>
             </div>
 
             <!-- COLUMNA CENTRAL Y DERECHA -->
             <div class="md:col-span-2 flex flex-col gap-6">
+
                 <!-- Registrar Alimento -->
                 <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6">
                     <h3 class="font-bold text-zinc-200 mb-4 flex items-center gap-2">
                         <i class="ph ph-plus-circle text-accent text-xl"></i> Registrar Alimento
                     </h3>
-                    <form id="food-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="sm:col-span-1">
-                            <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Nombre</label>
-                            <input type="text" id="food-name" placeholder="Ej. Pechuga de Pollo" required
-                                class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+
+                    <!-- Buscador Open Food Facts + Chile -->
+                    <div class="relative mb-4">
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-lg pointer-events-none"></i>
+                                <input type="text" id="food-search" placeholder="Buscar alimento... (ej: manzana, coca-cola, arroz)"
+                                    class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl pl-10 pr-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-accent transition-all">
+                                <div id="search-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2">
+                                    <div class="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Calorías (kcal)</label>
-                            <input type="number" id="food-cals" placeholder="Ej. 350" required min="1"
-                                class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                        <!-- Dropdown resultados -->
+                        <div id="search-results" class="hidden absolute z-30 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto custom-scrollbar">
+                            <div id="search-results-inner"></div>
                         </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full btn-accent text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2">
-                                <i class="ph ph-plus font-bold"></i> Agregar
+                    </div>
+
+                    <!-- Formulario manual -->
+                    <div id="food-form-wrapper">
+                        <!-- Categoría de comida -->
+                        <div class="mb-3">
+                            <label class="block text-xs text-zinc-400 font-medium mb-2 uppercase">Categoría</label>
+                            <div class="flex gap-2 flex-wrap">
+                                <button type="button" class="meal-cat-btn active" data-cat="desayuno">🌅 Desayuno</button>
+                                <button type="button" class="meal-cat-btn" data-cat="almuerzo">🍽️ Almuerzo</button>
+                                <button type="button" class="meal-cat-btn" data-cat="cena">🌙 Cena</button>
+                                <button type="button" class="meal-cat-btn" data-cat="snack">🍎 Snack</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Nombre del alimento</label>
+                                <input type="text" id="food-name" placeholder="Ej. Pechuga de Pollo" 
+                                    class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                <p id="food-name-error" class="text-[11px] text-rose-400 mt-1 hidden">⚠ Ingresa el nombre del alimento</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Calorías (kcal)</label>
+                                <input type="number" id="food-cals" placeholder="Ej. 350" min="1"
+                                    class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                <p id="food-cals-error" class="text-[11px] text-rose-400 mt-1 hidden">⚠ Ingresa calorías válidas (mayor a 0)</p>
+                            </div>
+                        </div>
+
+                        <!-- Macros opcionales -->
+                        <div class="mb-4">
+                            <button type="button" id="toggle-macros-btn" class="text-xs text-zinc-500 hover:text-accent transition-colors flex items-center gap-1">
+                                <i class="ph ph-caret-right text-sm" id="toggle-macros-icon"></i> Agregar macronutrientes (opcional)
                             </button>
+                            <div id="macros-input-row" class="hidden grid grid-cols-3 gap-2 mt-2">
+                                <div>
+                                    <label class="block text-[10px] text-emerald-400 mb-1">Proteínas (g)</label>
+                                    <input type="number" id="food-protein" min="0" placeholder="0"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-amber-400 mb-1">Carbos (g)</label>
+                                    <input type="number" id="food-carbs" min="0" placeholder="0"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-blue-400 mb-1">Grasas (g)</label>
+                                    <input type="number" id="food-fat" min="0" placeholder="0"
+                                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                                </div>
+                            </div>
                         </div>
-                    </form>
+
+                        <button type="button" id="food-submit-btn" class="w-full btn-accent text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2">
+                            <i class="ph ph-plus font-bold"></i> Agregar Alimento
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Comidas de hoy -->
+                <!-- Comidas de hoy por categoría -->
                 <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 min-h-[180px] flex flex-col">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-bold text-zinc-200 flex items-center gap-2"><i class="ph ph-fork-knife text-zinc-400 text-xl"></i> Comidas de hoy</h3>
@@ -246,8 +438,8 @@
                             <i class="ph ph-trash"></i> Vaciar todo
                         </button>
                     </div>
-                    <div class="flex-1 overflow-y-auto max-h-44 pr-1 custom-scrollbar">
-                        <ul id="food-list" class="space-y-2"></ul>
+                    <div class="flex-1 overflow-y-auto max-h-72 pr-1 custom-scrollbar">
+                        <div id="food-list-categorized"></div>
                         <div id="empty-state" class="flex flex-col items-center justify-center py-6 text-zinc-600">
                             <i class="ph ph-bowl-food text-3xl mb-2"></i>
                             <p class="text-sm">No has registrado alimentos hoy.</p>
@@ -255,7 +447,7 @@
                     </div>
                 </div>
 
-                <!-- SISTEMA DE ESTADÍSTICAS -->
+                <!-- Análisis Histórico -->
                 <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 relative overflow-hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                         <h3 class="font-bold text-zinc-200 flex items-center gap-2">
