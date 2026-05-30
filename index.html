@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFit — Calorie & Stats Tracker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#09090b] text-zinc-100 font-['Plus_Jakarta_Sans'] antialiased selection:bg-emerald-500/30 selection:text-emerald-400 min-h-screen relative overflow-x-hidden">
+
+    <!-- Spotlights Ambientales -->
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-[40%] right-[-10%] w-[40vw] h-[40vw] bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <!-- MODAL DE BIENVENIDA -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl transition-all duration-500 opacity-0 pointer-events-none">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative overflow-hidden text-center transform scale-95 transition-transform duration-500">
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+            <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-zinc-950 mx-auto mb-4 shadow-lg shadow-emerald-500/20">
+                <i class="ph ph-sparkles text-3xl font-bold"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-zinc-100 mb-2">Bienvenido a AuraFit</h2>
+            <p class="text-sm text-zinc-400 mb-6">Configura tu perfil para empezar a trackear tus calorías de forma inteligente.</p>
+            <form id="welcome-form" class="space-y-4">
+                <input type="text" id="modal-username" placeholder="¿Cómo te llamas?" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-all text-center font-semibold">
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/10">
+                    Comenzar mi cambio
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+        
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 transition-all duration-300 hover:border-zinc-700/50">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-zinc-950 font-bold text-xl shadow-lg shadow-emerald-500/20">
+                    <i class="ph ph-user text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-zinc-400 font-medium tracking-wider uppercase">Panel de Control</p>
+                    <div class="flex items-center gap-2 group">
+                        <input type="text" id="username" class="bg-transparent text-xl font-bold text-zinc-100 border-b border-transparent hover:border-zinc-700 focus:border-emerald-500 focus:outline-none transition-all py-0.5 w-40 sm:w-56" title="Haz clic para editar tu nombre">
+                        <i class="ph ph-pencil-line text-zinc-500 text-sm group-hover:text-zinc-300 transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Metas -->
+            <div class="flex flex-wrap items-center gap-4 sm:gap-6 bg-zinc-950/50 p-3 rounded-2xl border border-zinc-800/40">
+                <div class="flex items-center gap-2">
+                    <i class="ph ph-fire text-amber-500 text-xl"></i>
+                    <span class="text-sm text-zinc-400">Meta Cals:</span>
+                    <input type="number" id="meta-calories" class="w-16 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-center font-bold text-zinc-100 focus:outline-none focus:border-amber-500 transition-all text-sm">
+                </div>
+                <div class="h-6 w-px bg-zinc-800 hidden sm:block"></div>
+                <div class="flex items-center gap-2">
+                    <i class="ph ph-drop text-blue-500 text-xl"></i>
+                    <span class="text-sm text-zinc-400">Agua (Vasos):</span>
+                    <input type="number" id="meta-water" class="w-12 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-center font-bold text-zinc-100 focus:outline-none focus:border-blue-500 transition-all text-sm">
+                </div>
+            </div>
+        </header>
+
+        <!-- GRID PRINCIPAL -->
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="md:col-span-1 flex flex-col gap-6">
+                <!-- Resumen de Calorías -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden group">
+                    <h3 class="text-zinc-400 text-sm font-semibold tracking-wide uppercase mb-6">Resumen Calórico</h3>
+                    <div class="relative w-48 h-48 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="#18181b" stroke-width="8" fill="transparent" />
+                            <circle id="progress-circle" cx="50" cy="50" r="40" stroke="url(#emeraldGradient)" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" class="transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                            <defs>
+                                <linearGradient id="emeraldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981" />
+                                    <stop offset="100%" stop-color="#059669" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="absolute text-center">
+                            <span id="cal-remaining" class="block text-4xl font-extrabold text-zinc-100 tracking-tight transition-all duration-300">0</span>
+                            <span class="text-xs text-zinc-400 font-medium uppercase tracking-widest" id="cal-status-label">Restantes</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 w-full mt-6 pt-6 border-t border-zinc-800/60 text-center">
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-0.5">Consumidas</span>
+                            <span id="cal-consumed" class="text-lg font-bold text-emerald-400">0 kcal</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-0.5">Tu Meta</span>
+                            <span id="cal-target-display" class="text-lg font-bold text-zinc-300">0 kcal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registro de Agua -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+                                <i class="ph ph-drop-half text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-zinc-200">Registro de Agua</h3>
+                        </div>
+                        <span id="water-counter" class="text-sm font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">0 / 0 vasos</span>
+                    </div>
+                    <div id="water-grid" class="grid grid-cols-4 gap-2 mb-4"></div>
+                    <div class="flex gap-2">
+                        <button id="btn-add-water" class="flex-1 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2">
+                            <i class="ph ph-plus font-bold"></i> Beber Vaso
+                        </button>
+                        <button id="btn-reset-water" class="bg-zinc-800 hover:bg-zinc-700 p-2.5 rounded-xl transition-all"><i class="ph ph-arrows-counter-clockwise text-lg"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA CENTRAL Y DERECHA -->
+            <div class="md:col-span-2 flex flex-col gap-6">
+                <!-- Registrar Alimento -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6">
+                    <h3 class="font-bold text-zinc-200 mb-4 flex items-center gap-2">
+                        <i class="ph ph-plus-circle text-emerald-400 text-xl"></i> Registrar Alimento
+                    </h3>
+                    <form id="food-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="sm:col-span-1">
+                            <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Nombre</label>
+                            <input type="text" id="food-name" placeholder="Ej. Pechuga de Pollo" required class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 font-medium mb-1.5 uppercase">Calorías (kcal)</label>
+                            <input type="number" id="food-cals" placeholder="Ej. 350" required min="1" class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 transition-all">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-bold py-3 px-4 rounded-xl text-sm transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2">
+                                <i class="ph ph-plus font-bold"></i> Agregar comida
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Comidas de hoy -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 min-h-[180px] flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-zinc-200 flex items-center gap-2"><i class="ph ph-fork-knife text-zinc-400 text-xl"></i> Comidas de hoy</h3>
+                        <button id="btn-clear-food" class="text-xs text-zinc-500 hover:text-rose-400 transition-colors"><i class="ph ph-trash"></i> Vaciar todo</button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto max-h-44 pr-1 custom-scrollbar">
+                        <ul id="food-list" class="space-y-2"></ul>
+                        <div id="empty-state" class="flex flex-col items-center justify-center py-6 text-zinc-600">
+                            <p class="text-sm">No has registrado alimentos hoy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SISTEMA DE ESTADÍSTICAS -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6 relative overflow-hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                        <h3 class="font-bold text-zinc-200 flex items-center gap-2">
+                            <i class="ph ph-chart-bar-vertical text-violet-400 text-xl"></i> Análisis Histórico
+                        </h3>
+                        <div class="flex bg-zinc-950 p-1 rounded-xl border border-zinc-800/80 self-start sm:self-auto">
+                            <button class="tab-btn active px-3 py-1.5 text-xs font-semibold rounded-lg transition-all" data-tab="day">Día</button>
+                            <button class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-zinc-200" data-tab="week">Semana</button>
+                            <button class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-zinc-200" data-tab="month">Mes</button>
+                            <button class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-zinc-200" data-tab="year">Año</button>
+                        </div>
+                    </div>
+
+                    <div id="stats-render-container" class="min-h-[180px] flex items-end justify-between gap-3 pt-6 border-b border-zinc-800/50 pb-2">
+                        <!-- Barras inyectadas por JS -->
+                    </div>
+                    <div id="stats-summary-footer" class="mt-4 text-xs text-zinc-400 flex justify-between items-center"></div>
+                </div>
+
+                <!-- Notas -->
+                <div class="bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-6">
+                    <h4 class="font-bold text-zinc-200 text-base mb-2 flex items-center gap-2"><i class="ph ph-notebook text-amber-400"></i> Notas del Día</h4>
+                    <textarea id="daily-notes" placeholder="Escribe aquí anotaciones..." class="w-full h-20 bg-zinc-950 border border-zinc-800/80 rounded-xl p-3 text-xs text-zinc-200 focus:outline-none focus:border-amber-500 resize-none transition-all custom-scrollbar"></textarea>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
