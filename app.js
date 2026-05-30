@@ -568,6 +568,78 @@ function initEditFoodModal() {
 }
 
 function initEventListeners() {
+
+    // ---- Buscador Open Food Facts ----
+    let searchTimeout = null;
+
+    async function searchFoods(query) {
+        if (query.length < 2) {
+            document.getElementById('food-search-results').classList.add('hidden');
+            return;
+        }
+        document.getElementById('food-search-spinner').classList.remove('hidden');
+        try {
+            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&lc=es`;
+            const res = await fetch(url);
+            const data = await res.json();
+            renderFoodSearchResults(data.products || []);
+        } catch(e) {
+            console.error('Error buscando alimentos:', e);
+        } finally {
+            document.getElementById('food-search-spinner').classList.add('hidden');
+        }
+    }
+
+    function renderFoodSearchResults(products) {
+        const container = document.getElementById('food-search-results');
+        const valid = products.filter(p => p.product_name && p.nutriments && p.nutriments['energy-kcal_100g'] > 0);
+        if (valid.length === 0) {
+            container.innerHTML = `<div class="px-4 py-3 text-sm text-zinc-500">Sin resultados. Completa los campos manualmente.</div>`;
+            container.classList.remove('hidden');
+            return;
+        }
+        container.innerHTML = valid.map(p => {
+            const name = p.product_name || 'Sin nombre';
+            const brand = p.brands ? `<span class="text-zinc-600"> · ${p.brands.split(',')[0]}</span>` : '';
+            const kcal = Math.round(p.nutriments['energy-kcal_100g'] || 0);
+            const prot = Math.round(p.nutriments['proteins_100g'] || 0);
+            const carbs = Math.round(p.nutriments['carbohydrates_100g'] || 0);
+            const fat = Math.round(p.nutriments['fat_100g'] || 0);
+            return `<button type="button" class="food-search-item w-full text-left px-4 py-2.5 hover:bg-zinc-800 transition-colors border-b border-zinc-800 last:border-0"
+                data-name="${name.replace(/"/g,'&quot;')}" data-kcal="${kcal}" data-prot="${prot}" data-carbs="${carbs}" data-fat="${fat}">
+                <div class="text-sm text-zinc-100 font-medium">${name}${brand}</div>
+                <div class="text-xs text-zinc-500 mt-0.5">${kcal} kcal · ${prot}g prot · ${carbs}g carbs · ${fat}g grasas <span class="text-zinc-600">/ 100g</span></div>
+            </button>`;
+        }).join('');
+        container.classList.remove('hidden');
+
+        container.querySelectorAll('.food-search-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('food-name').value = btn.dataset.name;
+                document.getElementById('food-cals').value = btn.dataset.kcal;
+                document.getElementById('food-protein').value = btn.dataset.prot;
+                document.getElementById('food-carbs').value = btn.dataset.carbs;
+                document.getElementById('food-fat').value = btn.dataset.fat;
+                // Mostrar macros automáticamente
+                document.getElementById('macros-input-row').classList.remove('hidden');
+                document.getElementById('toggle-macros-icon').classList.add('rotate-90');
+                container.classList.add('hidden');
+                document.getElementById('food-search').value = '';
+            });
+        });
+    }
+
+    document.getElementById('food-search').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => searchFoods(e.target.value.trim()), 400);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#food-search') && !e.target.closest('#food-search-results')) {
+            document.getElementById('food-search-results').classList.add('hidden');
+        }
+    });
+
     // Agua
     document.getElementById('btn-add-water').addEventListener('click', () => {
         const key = getTodayKey();
