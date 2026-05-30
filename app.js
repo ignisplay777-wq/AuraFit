@@ -567,6 +567,201 @@ function initEditFoodModal() {
     });
 }
 
+// ============================================================
+// MODAL DE PORCIÓN
+// ============================================================
+
+// Definición de medidas estándar (multiplicador respecto a gramos)
+const PORTION_UNITS = [
+    { id: 'g',    label: 'Gramos',    short: 'g',   toG: 1,     defaultQty: 100, min: 1,   max: 1000, step: 1   },
+    { id: 'ml',   label: 'Mililitros',short: 'ml',  toG: 1,     defaultQty: 100, min: 1,   max: 1000, step: 1   },
+    { id: 'cup',  label: 'Taza',      short: 'taza',toG: 240,   defaultQty: 1,   min: 0.25,max: 10,   step: 0.25},
+    { id: 'tbsp', label: 'Cuchara',   short: 'cda', toG: 15,    defaultQty: 1,   min: 0.5, max: 30,   step: 0.5 },
+    { id: 'oz',   label: 'Onza',      short: 'oz',  toG: 28.35, defaultQty: 1,   min: 0.5, max: 32,   step: 0.5 },
+    { id: 'unit', label: 'Unidad',    short: 'u',   toG: null,  defaultQty: 1,   min: 0.5, max: 20,   step: 0.5 },
+];
+
+let portionState = {
+    food: null,       // { name, kcal100, prot100, carbs100, fat100, servingG, servingName }
+    unitId: 'g',
+    qty: 100,
+};
+
+function getPortionUnits(food) {
+    const units = PORTION_UNITS.filter(u => {
+        if (u.id === 'unit') return food.servingG && food.servingG > 0;
+        return true;
+    });
+    // If unit exists, add the serving label
+    return units.map(u => {
+        if (u.id === 'unit' && food.servingG) {
+            return { ...u, label: food.servingName ? food.servingName : `Unidad (~${food.servingG}g)`, toG: food.servingG };
+        }
+        return u;
+    });
+}
+
+function calcPortionMacros(food, unitId, qty) {
+    const units = getPortionUnits(food);
+    const unit = units.find(u => u.id === unitId) || units[0];
+    const grams = unit.toG ? unit.toG * qty : qty;
+    const factor = grams / 100;
+    return {
+        kcal:  Math.round(food.kcal100  * factor),
+        prot:  Math.round(food.prot100  * factor),
+        carbs: Math.round(food.carbs100 * factor),
+        fat:   Math.round(food.fat100   * factor),
+        grams: Math.round(grams),
+    };
+}
+
+function updatePortionPreview() {
+    const { food, unitId, qty } = portionState;
+    if (!food) return;
+    const m = calcPortionMacros(food, unitId, qty);
+    document.getElementById('pcalc-kcal').textContent  = m.kcal;
+    document.getElementById('pcalc-prot').textContent  = m.prot  + 'g';
+    document.getElementById('pcalc-carbs').textContent = m.carbs + 'g';
+    document.getElementById('pcalc-fat').textContent   = m.fat   + 'g';
+}
+
+function openPortionModal(food) {
+    portionState.food = food;
+    portionState.unitId = 'g';
+    portionState.qty = 100;
+
+    document.getElementById('portion-food-name').textContent = food.name;
+
+    // Render unit buttons
+    const grid = document.getElementById('portion-unit-grid');
+    const units = getPortionUnits(food);
+    grid.innerHTML = units.map(u => `
+        <button type="button" class="portion-unit-btn flex flex-col items-center justify-center gap-1 bg-zinc-800 border border-zinc-700 hover:border-accent rounded-2xl py-3 px-2 transition-all ${u.id === 'g' ? 'border-accent bg-zinc-700' : ''}"
+            data-unit="${u.id}">
+            <span class="text-base font-bold text-zinc-100">${u.short}</span>
+            <span class="text-[10px] text-zinc-400 leading-tight text-center">${u.label}</span>
+        </button>
+    `).join('');
+
+    grid.querySelectorAll('.portion-unit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            grid.querySelectorAll('.portion-unit-btn').forEach(b => {
+                b.classList.remove('border-accent', 'bg-zinc-700');
+                b.classList.add('border-zinc-700', 'bg-zinc-800');
+            });
+            btn.classList.add('border-accent', 'bg-zinc-700');
+            btn.classList.remove('border-zinc-700', 'bg-zinc-800');
+
+            portionState.unitId = btn.dataset.unit;
+            const unit = getPortionUnits(food).find(u => u.id === portionState.unitId);
+            if (unit) {
+                portionState.qty = unit.defaultQty;
+                const slider = document.getElementById('portion-slider');
+                slider.min   = unit.min;
+                slider.max   = unit.max;
+                slider.step  = unit.step;
+                slider.value = unit.defaultQty;
+                document.getElementById('portion-qty').value     = unit.defaultQty;
+                document.getElementById('portion-unit-label').textContent = unit.short;
+                document.getElementById('portion-range-min').textContent  = unit.min;
+                document.getElementById('portion-range-mid').textContent  = Math.round((parseFloat(unit.max) + parseFloat(unit.min)) / 2);
+                document.getElementById('portion-range-max').textContent  = unit.max;
+            }
+            updatePortionPreview();
+        });
+    });
+
+    // Init slider range for grams
+    const gUnit = units.find(u => u.id === 'g') || units[0];
+    document.getElementById('portion-slider').min   = gUnit.min;
+    document.getElementById('portion-slider').max   = gUnit.max;
+    document.getElementById('portion-slider').step  = gUnit.step;
+    document.getElementById('portion-slider').value = 100;
+    document.getElementById('portion-qty').value    = 100;
+    document.getElementById('portion-unit-label').textContent = 'g';
+    document.getElementById('portion-range-min').textContent  = gUnit.min;
+    document.getElementById('portion-range-mid').textContent  = 250;
+    document.getElementById('portion-range-max').textContent  = gUnit.max;
+
+    updatePortionPreview();
+    showModal('portion-modal');
+    // Slide up on mobile
+    setTimeout(() => {
+        const panel = document.getElementById('portion-modal-panel');
+        if (panel) panel.classList.remove('translate-y-full');
+    }, 10);
+}
+
+function initPortionModal() {
+    const slider = document.getElementById('portion-slider');
+    const qtyInput = document.getElementById('portion-qty');
+
+    slider.addEventListener('input', () => {
+        portionState.qty = parseFloat(slider.value);
+        qtyInput.value = portionState.qty;
+        updatePortionPreview();
+    });
+
+    qtyInput.addEventListener('input', () => {
+        const v = parseFloat(qtyInput.value) || 1;
+        portionState.qty = v;
+        slider.value = Math.min(Math.max(v, slider.min), slider.max);
+        updatePortionPreview();
+    });
+
+    document.getElementById('portion-minus').addEventListener('click', () => {
+        const unit = getPortionUnits(portionState.food).find(u => u.id === portionState.unitId);
+        const step = unit ? parseFloat(unit.step) : 1;
+        portionState.qty = Math.max(parseFloat(slider.min), portionState.qty - step);
+        qtyInput.value = portionState.qty;
+        slider.value = portionState.qty;
+        updatePortionPreview();
+    });
+
+    document.getElementById('portion-plus').addEventListener('click', () => {
+        const unit = getPortionUnits(portionState.food).find(u => u.id === portionState.unitId);
+        const step = unit ? parseFloat(unit.step) : 1;
+        portionState.qty = Math.min(parseFloat(slider.max), portionState.qty + step);
+        qtyInput.value = portionState.qty;
+        slider.value = portionState.qty;
+        updatePortionPreview();
+    });
+
+    document.getElementById('portion-close-btn').addEventListener('click', () => {
+        hideModal('portion-modal');
+    });
+    document.getElementById('portion-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('portion-modal')) hideModal('portion-modal');
+    });
+
+    document.getElementById('portion-confirm-btn').addEventListener('click', () => {
+        const { food, unitId, qty } = portionState;
+        if (!food) return;
+        const m = calcPortionMacros(food, unitId, qty);
+        const unit = getPortionUnits(food).find(u => u.id === unitId);
+        const unitLabel = unit ? unit.short : 'g';
+
+        const key = getTodayKey();
+        appState.history[key].foods.push({
+            id: Date.now(),
+            name: `${food.name} (${qty}${unitLabel})`,
+            calories: m.kcal,
+            protein: m.prot,
+            carbs: m.carbs,
+            fat: m.fat,
+            category: selectedMealCat,
+        });
+        saveAppState();
+        renderCaloricTracker();
+        renderMacros();
+        renderFoodList();
+        renderStatsSection();
+        renderAchievements();
+        hideModal('portion-modal');
+        showToast(`✓ ${food.name} agregado (${m.kcal} kcal)`);
+    });
+}
+
 function initEventListeners() {
 
     // ---- Buscador Open Food Facts ----
@@ -605,26 +800,31 @@ function initEventListeners() {
             const prot = Math.round(p.nutriments['proteins_100g'] || 0);
             const carbs = Math.round(p.nutriments['carbohydrates_100g'] || 0);
             const fat = Math.round(p.nutriments['fat_100g'] || 0);
+            // serving size if available
+            const servingG = p.serving_quantity ? parseFloat(p.serving_quantity) : null;
+            const servingName = p.serving_size || null;
             return `<button type="button" class="food-search-item w-full text-left px-4 py-2.5 hover:bg-zinc-800 transition-colors border-b border-zinc-800 last:border-0"
-                data-name="${name.replace(/"/g,'&quot;')}" data-kcal="${kcal}" data-prot="${prot}" data-carbs="${carbs}" data-fat="${fat}">
+                data-name="${name.replace(/"/g,'&quot;')}" data-kcal="${kcal}" data-prot="${prot}" data-carbs="${carbs}" data-fat="${fat}"
+                data-serving-g="${servingG || ''}" data-serving-name="${(servingName||'').replace(/"/g,'&quot;')}">
                 <div class="text-sm text-zinc-100 font-medium">${name}${brand}</div>
-                <div class="text-xs text-zinc-500 mt-0.5">${kcal} kcal · ${prot}g prot · ${carbs}g carbs · ${fat}g grasas <span class="text-zinc-600">/ 100g</span></div>
+                <div class="text-xs text-zinc-500 mt-0.5">${kcal} kcal · ${prot}g prot · ${carbs}g carbs · ${fat}g grasas <span class="text-zinc-600">/ 100g</span>${servingG ? ` · <span class="text-zinc-400">Porción: ${servingG}g</span>` : ''}</div>
             </button>`;
         }).join('');
         container.classList.remove('hidden');
 
         container.querySelectorAll('.food-search-item').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.getElementById('food-name').value = btn.dataset.name;
-                document.getElementById('food-cals').value = btn.dataset.kcal;
-                document.getElementById('food-protein').value = btn.dataset.prot;
-                document.getElementById('food-carbs').value = btn.dataset.carbs;
-                document.getElementById('food-fat').value = btn.dataset.fat;
-                // Mostrar macros automáticamente
-                document.getElementById('macros-input-row').classList.remove('hidden');
-                document.getElementById('toggle-macros-icon').classList.add('rotate-90');
                 container.classList.add('hidden');
                 document.getElementById('food-search').value = '';
+                openPortionModal({
+                    name:    btn.dataset.name,
+                    kcal100: parseFloat(btn.dataset.kcal)   || 0,
+                    prot100: parseFloat(btn.dataset.prot)   || 0,
+                    carbs100:parseFloat(btn.dataset.carbs)  || 0,
+                    fat100:  parseFloat(btn.dataset.fat)    || 0,
+                    servingG:   parseFloat(btn.dataset.servingG)  || null,
+                    servingName:btn.dataset.servingName || null,
+                });
             });
         });
     }
@@ -1053,6 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initOnboarding();
     initConfig();
     initEditFoodModal();
+    initPortionModal();
     initEventListeners();
 
     // Firebase auth state listener — se ejecuta al cargar y al hacer login/logout

@@ -89,7 +89,8 @@
 #onboarding-modal > div,
 #config-modal > div,
 #confirm-modal > div,
-#edit-food-modal > div {
+#edit-food-modal > div,
+#portion-modal > div {
     transform: scale(0.95);
     transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
@@ -179,5 +180,60 @@
     border-color: #f43f5e !important;
 }
 
+
 /* Macro hint tooltip */
 #macros-hint { transition: opacity 0.3s; }
+
+/* Portion modal — unit buttons */
+.portion-unit-btn {
+    transition: all 0.18s ease;
+}
+.portion-unit-btn:hover {
+    border-color: var(--accent) !important;
+    background: rgba(255,255,255,0.04) !important;
+}
+
+/* Portion slider track */
+#portion-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 9999px;
+    background: #27272a;
+    outline: none;
+    cursor: pointer;
+}
+#portion-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 0 4px var(--accent-bg);
+    transition: box-shadow 0.15s;
+}
+#portion-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 6px var(--accent-bg);
+}
+#portion-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 0 4px var(--accent-bg);
+}
+
+/* Portion modal slide-in on mobile */
+@media (max-width: 639px) {
+    #portion-modal > div {
+        transform: translateY(100%) !important;
+        transition: transform 0.35s cubic-bezier(0.32,0.72,0,1) !important;
+    }
+    #portion-modal.modal-visible > div {
+        transform: translateY(0) !important;
+    }
+}

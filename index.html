@@ -474,6 +474,89 @@
         </main>
     </div>
 
+    <!-- MODAL PORCIÓN DE ALIMENTO -->
+    <div id="portion-modal" class="fixed inset-0 z-[55] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md mx-0 sm:mx-4 shadow-2xl overflow-hidden transition-transform duration-300 translate-y-full sm:translate-y-0 scale-100" id="portion-modal-panel">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-zinc-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl btn-accent flex items-center justify-center text-zinc-950">
+                        <i class="ph ph-scales text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-zinc-100 text-base leading-tight" id="portion-food-name">Alimento</h3>
+                        <p class="text-[11px] text-zinc-500">Elige la medida y cantidad</p>
+                    </div>
+                </div>
+                <button id="portion-close-btn" class="text-zinc-500 hover:text-zinc-200 transition-colors p-1">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <div class="px-6 pt-5 pb-6 space-y-5">
+                <!-- Unidad selector -->
+                <div>
+                    <label class="block text-xs text-zinc-400 font-semibold uppercase tracking-wider mb-3">Tipo de medida</label>
+                    <div class="grid grid-cols-2 gap-2" id="portion-unit-grid">
+                        <!-- filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Cantidad -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs text-zinc-400 font-semibold uppercase tracking-wider">Cantidad</label>
+                        <div class="flex items-center gap-2">
+                            <button id="portion-minus" class="w-8 h-8 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center justify-center text-lg font-bold transition-all active:scale-95">−</button>
+                            <input type="number" id="portion-qty" min="1" step="1" value="100"
+                                class="w-20 text-center bg-zinc-950 border border-zinc-800 rounded-xl px-2 py-1.5 text-base font-bold text-zinc-100 focus:outline-none focus:border-accent transition-all">
+                            <button id="portion-plus" class="w-8 h-8 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center justify-center text-lg font-bold transition-all active:scale-95">+</button>
+                            <span id="portion-unit-label" class="text-sm text-zinc-400 font-medium min-w-[24px]">g</span>
+                        </div>
+                    </div>
+                    <input type="range" id="portion-slider" min="1" max="500" value="100" step="1"
+                        class="w-full h-2 rounded-full appearance-none bg-zinc-800 outline-none cursor-pointer" style="accent-color: var(--accent)">
+                    <div class="flex justify-between text-[10px] text-zinc-600 mt-1">
+                        <span id="portion-range-min">1</span>
+                        <span id="portion-range-mid">250</span>
+                        <span id="portion-range-max">500</span>
+                    </div>
+                </div>
+
+                <!-- Preview de macros calculados -->
+                <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold mb-3">Valores calculados</p>
+                    <div class="flex items-center justify-between">
+                        <div class="text-center">
+                            <p class="text-2xl font-extrabold text-zinc-100" id="pcalc-kcal">0</p>
+                            <p class="text-[10px] text-zinc-500 mt-0.5">kcal</p>
+                        </div>
+                        <div class="h-8 w-px bg-zinc-800"></div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-emerald-400" id="pcalc-prot">0g</p>
+                            <p class="text-[10px] text-zinc-500 mt-0.5">Prot.</p>
+                        </div>
+                        <div class="h-8 w-px bg-zinc-800"></div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-amber-400" id="pcalc-carbs">0g</p>
+                            <p class="text-[10px] text-zinc-500 mt-0.5">Carbs</p>
+                        </div>
+                        <div class="h-8 w-px bg-zinc-800"></div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-blue-400" id="pcalc-fat">0g</p>
+                            <p class="text-[10px] text-zinc-500 mt-0.5">Grasas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón agregar -->
+                <button id="portion-confirm-btn" class="w-full btn-accent text-zinc-950 font-bold py-3.5 px-4 rounded-xl text-sm transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2">
+                    <i class="ph ph-check-circle font-bold text-lg"></i> Agregar a mi dieta
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
