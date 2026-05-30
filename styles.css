@@ -181,10 +181,3 @@
 
 /* Macro hint tooltip */
 #macros-hint { transition: opacity 0.3s; }
-
-/* ---- Escáner de código de barras ---- */
-@keyframes scan {
-    0%   { top: 10%; }
-    50%  { top: calc(90% - 2px); }
-    100% { top: 10%; }
-}

@@ -192,338 +192,202 @@ function showToast(msg, type = 'default') {
 // ============================================================
 
 // Base de datos chilena embebida (productos comunes de Chile)
-// ============================================================
-// BASE DE DATOS CHILENA (valores por 100g)
-// ============================================================
 const CHILE_FOODS = [
-    { name: 'Pan marraqueta',            calories: 267, protein: 9,    carbs: 52,   fat: 2,   emoji: '🍞' },
-    { name: 'Pan de molde',              calories: 265, protein: 8,    carbs: 50,   fat: 3,   emoji: '🍞' },
-    { name: 'Arroz blanco cocido',       calories: 130, protein: 2.7,  carbs: 28,   fat: 0.3, emoji: '🍚' },
-    { name: 'Fideos cocidos',            calories: 131, protein: 5,    carbs: 25,   fat: 1,   emoji: '🍝' },
-    { name: 'Pechuga de pollo cocida',   calories: 165, protein: 31,   carbs: 0,    fat: 3.6, emoji: '🍗' },
-    { name: 'Pollo entero asado',        calories: 215, protein: 25,   carbs: 0,    fat: 12,  emoji: '🍗' },
-    { name: 'Huevo entero',              calories: 143, protein: 13,   carbs: 0.7,  fat: 10,  emoji: '🥚' },
-    { name: 'Leche entera',              calories: 61,  protein: 3.2,  carbs: 4.7,  fat: 3.3, emoji: '🥛' },
-    { name: 'Leche descremada',          calories: 35,  protein: 3.4,  carbs: 4.9,  fat: 0.1, emoji: '🥛' },
-    { name: 'Yogur natural',             calories: 59,  protein: 3.5,  carbs: 4.7,  fat: 3.3, emoji: '🥛' },
-    { name: 'Queso chanco',              calories: 360, protein: 22,   carbs: 1.3,  fat: 30,  emoji: '🧀' },
-    { name: 'Queso fresco',              calories: 174, protein: 11,   carbs: 2.7,  fat: 13,  emoji: '🧀' },
-    { name: 'Mantequilla',               calories: 717, protein: 0.9,  carbs: 0.1,  fat: 81,  emoji: '🧈' },
-    { name: 'Aceite vegetal',            calories: 884, protein: 0,    carbs: 0,    fat: 100, emoji: '🫙' },
-    { name: 'Manzana',                   calories: 52,  protein: 0.3,  carbs: 14,   fat: 0.2, emoji: '🍎' },
-    { name: 'Plátano',                   calories: 89,  protein: 1.1,  carbs: 23,   fat: 0.3, emoji: '🍌' },
-    { name: 'Naranja',                   calories: 47,  protein: 0.9,  carbs: 12,   fat: 0.1, emoji: '🍊' },
-    { name: 'Palta (aguacate)',           calories: 160, protein: 2,    carbs: 9,    fat: 15,  emoji: '🥑' },
-    { name: 'Tomate',                    calories: 18,  protein: 0.9,  carbs: 3.9,  fat: 0.2, emoji: '🍅' },
-    { name: 'Lechuga',                   calories: 15,  protein: 1.4,  carbs: 2.9,  fat: 0.2, emoji: '🥬' },
-    { name: 'Zanahoria',                 calories: 41,  protein: 0.9,  carbs: 10,   fat: 0.2, emoji: '🥕' },
-    { name: 'Papa cocida',               calories: 77,  protein: 2,    carbs: 17,   fat: 0.1, emoji: '🥔' },
-    { name: 'Lentejas cocidas',          calories: 116, protein: 9,    carbs: 20,   fat: 0.4, emoji: '🫘' },
-    { name: 'Porotos negros cocidos',    calories: 132, protein: 8.9,  carbs: 24,   fat: 0.5, emoji: '🫘' },
-    { name: 'Garbanzos cocidos',         calories: 164, protein: 8.9,  carbs: 27,   fat: 2.6, emoji: '🫘' },
-    { name: 'Salmón cocido',             calories: 206, protein: 20,   carbs: 0,    fat: 13,  emoji: '🐟' },
-    { name: 'Atún en agua',              calories: 116, protein: 25,   carbs: 0,    fat: 1,   emoji: '🐟' },
-    { name: 'Merluza cocida',            calories: 117, protein: 23,   carbs: 0,    fat: 2.5, emoji: '🐟' },
-    { name: 'Carne molida vacuno 80/20', calories: 254, protein: 17,   carbs: 0,    fat: 20,  emoji: '🥩' },
-    { name: 'Filete de vacuno',          calories: 271, protein: 26,   carbs: 0,    fat: 18,  emoji: '🥩' },
-    { name: 'Empanada de pino',          calories: 317, protein: 12,   carbs: 35,   fat: 14,  emoji: '🥟' },
-    { name: 'Completo italiano',         calories: 289, protein: 10,   carbs: 27,   fat: 16,  emoji: '🌭' },
-    { name: 'Cazuela de vacuno',         calories: 280, protein: 22,   carbs: 24,   fat: 8,   emoji: '🍲' },
-    { name: 'Porotos con riendas',       calories: 320, protein: 15,   carbs: 55,   fat: 5,   emoji: '🫘' },
-    { name: 'Sopaipilla frita',          calories: 360, protein: 6,    carbs: 46,   fat: 18,  emoji: '🫓' },
-    { name: 'Avena cruda',               calories: 389, protein: 17,   carbs: 66,   fat: 7,   emoji: '🌾' },
-    { name: 'Granola',                   calories: 471, protein: 10,   carbs: 64,   fat: 20,  emoji: '🌾' },
-    { name: 'Cecina de vacuno',          calories: 290, protein: 22,   carbs: 3,    fat: 22,  emoji: '🥩' },
-    { name: 'Jamón de pavo',             calories: 107, protein: 16,   carbs: 2,    fat: 4,   emoji: '🍖' },
-    { name: 'Salchicha vienesa',         calories: 290, protein: 12,   carbs: 3,    fat: 26,  emoji: '🌭' },
-    { name: 'Mayonesa',                  calories: 680, protein: 1,    carbs: 2,    fat: 75,  emoji: '🥣' },
-    { name: 'Ketchup',                   calories: 100, protein: 1.4,  carbs: 24,   fat: 0.4, emoji: '🍅' },
-    { name: 'Coca-Cola',                 calories: 42,  protein: 0,    carbs: 10.6, fat: 0,   emoji: '🥤' },
-    { name: 'Jugo de naranja',           calories: 45,  protein: 0.7,  carbs: 10,   fat: 0.2, emoji: '🍊' },
-    { name: 'Agua mineral',              calories: 0,   protein: 0,    carbs: 0,    fat: 0,   emoji: '💧' },
-    { name: 'Ramitas',                   calories: 483, protein: 6.7,  carbs: 63,   fat: 23,  emoji: '🍿' },
-    { name: 'Papas fritas bolsa',        calories: 517, protein: 6.7,  carbs: 50,   fat: 33,  emoji: '🍟' },
-    { name: 'Chocolate negro 70%',       calories: 598, protein: 8,    carbs: 46,   fat: 43,  emoji: '🍫' },
-    { name: 'Chocolate leche',           calories: 535, protein: 7.6,  carbs: 59,   fat: 29,  emoji: '🍫' },
-    { name: 'Nueces',                    calories: 654, protein: 15,   carbs: 14,   fat: 65,  emoji: '🥜' },
-    { name: 'Almendras',                 calories: 579, protein: 21,   carbs: 22,   fat: 50,  emoji: '🥜' },
-    { name: 'Maní (cacahuete)',          calories: 567, protein: 26,   carbs: 16,   fat: 49,  emoji: '🥜' },
-    { name: 'Miel',                      calories: 304, protein: 0.3,  carbs: 82,   fat: 0,   emoji: '🍯' },
-    { name: 'Azúcar blanca',             calories: 387, protein: 0,    carbs: 100,  fat: 0,   emoji: '🍬' },
+    { name: 'Pan marraqueta', calories: 267, protein: 9, carbs: 52, fat: 2 },
+    { name: 'Completo italiano', calories: 520, protein: 18, carbs: 48, fat: 28 },
+    { name: 'Empanada de pino', calories: 380, protein: 14, carbs: 42, fat: 17 },
+    { name: 'Cazuela de vacuno', calories: 280, protein: 22, carbs: 24, fat: 8 },
+    { name: 'Porotos con riendas', calories: 320, protein: 15, carbs: 55, fat: 5 },
+    { name: 'Arroz con leche', calories: 190, protein: 5, carbs: 38, fat: 3 },
+    { name: 'Sopaipillas (2 unidades)', calories: 260, protein: 4, carbs: 38, fat: 11 },
+    { name: 'Mote con huesillo', calories: 220, protein: 4, carbs: 52, fat: 0 },
+    { name: 'Manjar (1 cda)', calories: 60, protein: 1, carbs: 12, fat: 1 },
+    { name: 'Leche Colún entera (1 vaso)', calories: 150, protein: 8, carbs: 11, fat: 8 },
+    { name: 'Yogur Soprole natural', calories: 80, protein: 5, carbs: 10, fat: 2 },
+    { name: 'Queso gauda (30g)', calories: 105, protein: 7, carbs: 0, fat: 8 },
+    { name: 'Cecinas longaniza (50g)', calories: 180, protein: 8, carbs: 1, fat: 16 },
+    { name: 'Palta chilena (½)', calories: 120, protein: 1, carbs: 6, fat: 11 },
+    { name: 'Chirimoya (100g)', calories: 94, protein: 1, carbs: 24, fat: 0 },
+    { name: 'Lúcuma (100g)', calories: 99, protein: 2, carbs: 25, fat: 0 },
+    { name: 'Pan de molde (1 rebanada)', calories: 79, protein: 3, carbs: 15, fat: 1 },
+    { name: 'Coca-Cola 350ml', calories: 140, protein: 0, carbs: 39, fat: 0 },
+    { name: 'Bilz 350ml', calories: 130, protein: 0, carbs: 33, fat: 0 },
+    { name: 'Pap 350ml', calories: 130, protein: 0, carbs: 33, fat: 0 },
+    { name: 'Jugo Watt\'s naranja (200ml)', calories: 90, protein: 0, carbs: 22, fat: 0 },
+    { name: 'Néctar Watt\'s durazno (200ml)', calories: 100, protein: 0, carbs: 25, fat: 0 },
+    { name: 'Té con leche (taza)', calories: 70, protein: 3, carbs: 8, fat: 3 },
+    { name: 'Nescafé con leche (taza)', calories: 80, protein: 4, carbs: 10, fat: 3 },
+    { name: 'Hallulla (1 unidad)', calories: 240, protein: 7, carbs: 46, fat: 3 },
+    { name: 'Galleta Tritón (3 unidades)', calories: 140, protein: 2, carbs: 20, fat: 6 },
+    { name: 'Galleta Picaroco (3 unidades)', calories: 130, protein: 2, carbs: 19, fat: 5 },
+    { name: 'Churrascas (1 unidad)', calories: 290, protein: 8, carbs: 52, fat: 6 },
+    { name: 'Arvejas cocidas (½ taza)', calories: 60, protein: 4, carbs: 11, fat: 0 },
+    { name: 'Tomate chileno (1 mediano)', calories: 22, protein: 1, carbs: 5, fat: 0 },
+    { name: 'Pechuga de pollo a la plancha (100g)', calories: 165, protein: 31, carbs: 0, fat: 4 },
+    { name: 'Reineta al horno (100g)', calories: 110, protein: 22, carbs: 0, fat: 3 },
+    { name: 'Merluza frita (100g)', calories: 195, protein: 18, carbs: 8, fat: 10 },
+    { name: 'Asado vacuno (100g)', calories: 250, protein: 26, carbs: 0, fat: 16 },
+    { name: 'Plateada estofada (100g)', calories: 280, protein: 24, carbs: 2, fat: 19 },
+    { name: 'Arroz cocido (½ taza)', calories: 103, protein: 2, carbs: 22, fat: 0 },
+    { name: 'Papa cocida (1 mediana)', calories: 110, protein: 3, carbs: 26, fat: 0 },
+    { name: 'Fideos cocidos (½ taza)', calories: 110, protein: 4, carbs: 22, fat: 1 },
+    { name: 'Lentejas cocidas (½ taza)', calories: 115, protein: 9, carbs: 20, fat: 0 },
+    { name: 'Huevo frito (1 unidad)', calories: 90, protein: 6, carbs: 0, fat: 7 },
+    { name: 'Huevo a la copa (1 unidad)', calories: 74, protein: 6, carbs: 0, fat: 5 },
+    { name: 'Sandwich ave mayo', calories: 430, protein: 20, carbs: 42, fat: 20 },
+    { name: 'Chorrillana (porción)', calories: 780, protein: 28, carbs: 70, fat: 42 },
+    { name: 'Calzone de ave (porción)', calories: 650, protein: 30, carbs: 58, fat: 32 },
+    { name: 'Manzana chilena (1 mediana)', calories: 72, protein: 0, carbs: 19, fat: 0 },
+    { name: 'Uvas (100g)', calories: 69, protein: 1, carbs: 18, fat: 0 },
+    { name: 'Plátano (1 mediano)', calories: 89, protein: 1, carbs: 23, fat: 0 },
+    { name: 'Naranja (1 mediana)', calories: 62, protein: 1, carbs: 15, fat: 0 },
+    { name: 'Durazno (1 mediano)', calories: 58, protein: 1, carbs: 14, fat: 0 },
+    { name: 'Ramitas Manty (30g)', calories: 145, protein: 2, carbs: 19, fat: 7 },
+    { name: 'Papas fritas bolsa (30g)', calories: 155, protein: 2, carbs: 15, fat: 10 },
+    { name: 'Helado Savory paleta', calories: 120, protein: 2, carbs: 18, fat: 5 },
+    { name: 'Kuchen de frambuesa (porción)', calories: 320, protein: 5, carbs: 48, fat: 13 },
+    { name: 'Strudel de manzana (porción)', calories: 290, protein: 4, carbs: 44, fat: 11 },
 ];
 
 function searchChileFoods(query) {
     const q = query.toLowerCase().trim();
-    return CHILE_FOODS.filter(f => f.name.toLowerCase().includes(q)).slice(0, 6);
+    return CHILE_FOODS.filter(f => f.name.toLowerCase().includes(q)).slice(0, 5);
 }
 
-// ============================================================
-// OPEN FOOD FACTS — búsqueda por texto
-// ============================================================
 async function searchOpenFoodFacts(query) {
     try {
-        const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10&lc=es&cc=cl`;
+        const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&lc=es&cc=cl`;
         const res = await fetch(url);
         const data = await res.json();
         if (!data.products) return [];
         return data.products
-            .filter(p => p.product_name && p.nutriments && p.nutriments['energy-kcal_100g'] > 0)
-            .slice(0, 6)
+            .filter(p => p.product_name && p.nutriments)
             .map(p => ({
-                name:     p.product_name,
-                brand:    p.brands ? p.brands.split(',')[0].trim() : '',
-                calories: Math.round(p.nutriments['energy-kcal_100g'] || 0),
-                protein:  Math.round((p.nutriments['proteins_100g'] || 0) * 10) / 10,
-                carbs:    Math.round((p.nutriments['carbohydrates_100g'] || 0) * 10) / 10,
-                fat:      Math.round((p.nutriments['fat_100g'] || 0) * 10) / 10,
-                barcode:  p.code || '',
-                source:   'off',
-                emoji:    '🌍',
-            }));
-    } catch(e) { return []; }
+                name: p.product_name,
+                brand: p.brands || '',
+                calories: Math.round(p.nutriments['energy-kcal_100g'] || p.nutriments['energy-kcal'] || 0),
+                protein: Math.round(p.nutriments['proteins_100g'] || 0),
+                carbs: Math.round(p.nutriments['carbohydrates_100g'] || 0),
+                fat: Math.round(p.nutriments['fat_100g'] || 0),
+            }))
+            .filter(p => p.calories > 0)
+            .slice(0, 6);
+    } catch (e) {
+        return [];
+    }
 }
 
-// ============================================================
-// OPEN FOOD FACTS — búsqueda por código de barras
-// ============================================================
-async function lookupBarcode(barcode) {
-    try {
-        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
-        const data = await res.json();
-        if (data.status !== 1 || !data.product) return null;
-        const p = data.product;
-        const n = p.nutriments || {};
-        return {
-            name:     p.product_name || p.product_name_es || 'Producto escaneado',
-            brand:    p.brands ? p.brands.split(',')[0].trim() : '',
-            calories: Math.round(n['energy-kcal_100g'] || 0),
-            protein:  Math.round((n['proteins_100g'] || 0) * 10) / 10,
-            carbs:    Math.round((n['carbohydrates_100g'] || 0) * 10) / 10,
-            fat:      Math.round((n['fat_100g'] || 0) * 10) / 10,
-            barcode,
-            source:   'barcode',
-            emoji:    '📦',
-        };
-    } catch(e) { return null; }
-}
+function renderSearchResults(chileResults, offResults, query) {
+    const container = document.getElementById('search-results-inner');
+    container.innerHTML = '';
 
-// ============================================================
-// RENDERIZADO DEL DROPDOWN DE BÚSQUEDA
-// ============================================================
-function renderSearchDropdown(chileRes, offRes) {
-    const dd = document.getElementById('search-results');
-    const inner = document.getElementById('search-results-inner');
-    inner.innerHTML = '';
-
-    if (!chileRes.length && !offRes.length) {
-        inner.innerHTML = `<div class="px-4 py-3 text-sm text-zinc-500">Sin resultados. Agrega manualmente.</div>`;
-        dd.classList.remove('hidden');
+    if (chileResults.length === 0 && offResults.length === 0) {
+        container.innerHTML = `<div class="px-4 py-3 text-sm text-zinc-500">Sin resultados para "${query}". Registra manualmente.</div>`;
         return;
     }
 
-    if (chileRes.length) {
-        const hdr = document.createElement('div');
-        hdr.className = 'px-4 py-2 text-[11px] text-zinc-500 font-semibold uppercase tracking-wider';
-        hdr.textContent = '🇨🇱 Base chilena';
-        inner.appendChild(hdr);
-        chileRes.forEach(f => inner.appendChild(makeSearchItem({ ...f, source: 'chile' })));
+    if (chileResults.length > 0) {
+        const header = document.createElement('div');
+        header.className = 'px-4 pt-3 pb-1 text-[10px] font-bold text-emerald-400 uppercase tracking-widest';
+        header.textContent = '🇨🇱 Base de datos Chile';
+        container.appendChild(header);
+        chileResults.forEach(food => appendSearchItem(container, food));
     }
 
-    if (offRes.length) {
-        const hdr = document.createElement('div');
-        hdr.className = 'px-4 py-2 text-[11px] text-zinc-500 font-semibold uppercase tracking-wider border-t border-zinc-800';
-        hdr.textContent = '🌍 Open Food Facts';
-        inner.appendChild(hdr);
-        offRes.forEach(f => inner.appendChild(makeSearchItem(f)));
+    if (offResults.length > 0) {
+        const header = document.createElement('div');
+        header.className = 'px-4 pt-3 pb-1 text-[10px] font-bold text-zinc-500 uppercase tracking-widest';
+        header.textContent = '🌍 Open Food Facts';
+        container.appendChild(header);
+        offResults.forEach(food => appendSearchItem(container, food));
     }
-
-    dd.classList.remove('hidden');
 }
 
-function makeSearchItem(food) {
+function appendSearchItem(container, food) {
     const div = document.createElement('div');
-    div.className = 'flex items-center justify-between px-4 py-2.5 hover:bg-zinc-800 cursor-pointer border-b border-zinc-800 last:border-0 transition-colors';
+    div.className = 'search-result-item';
     div.innerHTML = `
-        <div class="min-w-0">
-            <p class="text-sm text-zinc-100 font-medium truncate">
-                ${food.emoji || '🍽️'} ${food.name}
-                ${food.brand ? `<span class="text-zinc-500 font-normal text-xs">· ${food.brand}</span>` : ''}
-            </p>
-            <p class="text-xs text-zinc-500 mt-0.5">
-                <span class="text-accent font-semibold">${food.calories} kcal</span>
-                ${food.protein ? ` · <span class="text-emerald-400">${food.protein}g P</span>` : ''}
-                ${food.carbs   ? ` · <span class="text-amber-400">${food.carbs}g C</span>` : ''}
-                ${food.fat     ? ` · <span class="text-blue-400">${food.fat}g G</span>` : ''}
-                <span class="text-zinc-600"> /100g</span>
-            </p>
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-zinc-200 font-medium">${food.name}${food.brand ? ` <span class="text-zinc-500 font-normal text-xs">· ${food.brand}</span>` : ''}</p>
+                <p class="text-xs text-zinc-500 mt-0.5">
+                    <span class="text-accent font-semibold">${food.calories} kcal</span>
+                    ${food.protein ? ` · <span class="text-emerald-400">${food.protein}g P</span>` : ''}
+                    ${food.carbs ? ` · <span class="text-amber-400">${food.carbs}g C</span>` : ''}
+                    ${food.fat ? ` · <span class="text-blue-400">${food.fat}g G</span>` : ''}
+                </p>
+            </div>
+            <i class="ph ph-plus-circle text-accent text-xl flex-shrink-0 ml-2"></i>
         </div>
-        <i class="ph ph-plus-circle text-accent text-xl flex-shrink-0 ml-2"></i>
     `;
-    div.addEventListener('click', () => openGramsModal(food));
-    return div;
+    div.addEventListener('click', () => {
+        fillFoodForm(food);
+        closeSearchResults();
+    });
+    container.appendChild(div);
+}
+
+function fillFoodForm(food) {
+    document.getElementById('food-name').value = food.name;
+    document.getElementById('food-cals').value = food.calories || '';
+    // Show macros section and fill
+    if (food.protein || food.carbs || food.fat) {
+        document.getElementById('macros-input-row').classList.remove('hidden');
+        document.getElementById('macros-input-row').classList.add('grid');
+        document.getElementById('toggle-macros-icon').className = 'ph ph-caret-down text-sm';
+        document.getElementById('food-protein').value = food.protein || 0;
+        document.getElementById('food-carbs').value = food.carbs || 0;
+        document.getElementById('food-fat').value = food.fat || 0;
+    }
+    document.getElementById('food-search').value = '';
+    clearInputErrors();
+}
+
+function closeSearchResults() {
+    document.getElementById('search-results').classList.add('hidden');
 }
 
 async function runSearch(query) {
-    if (!query || query.length < 2) {
-        document.getElementById('search-results').classList.add('hidden');
-        return;
-    }
+    if (query.length < 2) { closeSearchResults(); return; }
     document.getElementById('search-spinner').classList.remove('hidden');
     document.getElementById('search-results').classList.remove('hidden');
-    document.getElementById('search-results-inner').innerHTML = '<div class="px-4 py-3 text-sm text-zinc-500">Buscando…</div>';
+    document.getElementById('search-results-inner').innerHTML = '<div class="px-4 py-3 text-sm text-zinc-500">Buscando...</div>';
 
-    const [chileRes, offRes] = await Promise.all([
-        Promise.resolve(searchChileFoods(query)),
-        searchOpenFoodFacts(query),
-    ]);
+    const chileResults = searchChileFoods(query);
+    const offResults = await searchOpenFoodFacts(query);
+
     document.getElementById('search-spinner').classList.add('hidden');
-    renderSearchDropdown(chileRes, offRes);
+    renderSearchResults(chileResults, offResults, query);
 }
 
-// ============================================================
-// MODAL DE GRAMOS (al estilo Fitia)
-// ============================================================
-let _gramsFood = null;
-
-function openGramsModal(food) {
-    _gramsFood = food;
-    document.getElementById('search-results').classList.add('hidden');
-    document.getElementById('food-search').value = '';
-
-    document.getElementById('gm-food-name').textContent = (food.emoji || '🍽️') + ' ' + food.name;
-    document.getElementById('gm-food-brand').textContent = food.brand ? `· ${food.brand}` : '';
-    document.getElementById('gm-per100').textContent =
-        `Por 100g: ${food.calories} kcal · ${food.protein}g P · ${food.carbs}g C · ${food.fat}g G`;
-
-    const defaultGrams = 100;
-    document.getElementById('gm-slider').value = Math.min(800, defaultGrams);
-    document.getElementById('gm-grams-num').value = defaultGrams;
-    updateGramsCalc(defaultGrams);
-
-    document.getElementById('grams-modal').classList.add('modal-visible');
+// ---- Validación del formulario ----
+function clearInputErrors() {
+    document.getElementById('food-name').classList.remove('input-error');
+    document.getElementById('food-cals').classList.remove('input-error');
+    document.getElementById('food-name-error').classList.add('hidden');
+    document.getElementById('food-cals-error').classList.add('hidden');
 }
 
-function updateGramsCalc(grams) {
-    grams = Math.max(1, parseInt(grams) || 1);
-    const f = _gramsFood;
-    if (!f) return;
-    const r = grams / 100;
-    document.getElementById('gm-cal').textContent  = Math.round(f.calories * r);
-    document.getElementById('gm-pro').textContent  = Math.round(f.protein  * r * 10) / 10;
-    document.getElementById('gm-carb').textContent = Math.round(f.carbs    * r * 10) / 10;
-    document.getElementById('gm-fat').textContent  = Math.round(f.fat      * r * 10) / 10;
-    document.getElementById('gm-add-btn').textContent = `✓ Agregar ${grams}g`;
-}
-
-function addFoodFromGramsModal() {
-    const grams = parseInt(document.getElementById('gm-grams-num').value) || 100;
-    const f = _gramsFood;
-    if (!f) return;
-    const r = grams / 100;
-    const key = getTodayKey();
-    appState.history[key].foods.push({
-        id:       Date.now(),
-        name:     f.name,
-        emoji:    f.emoji || '🍽️',
-        calories: Math.round(f.calories * r),
-        protein:  Math.round(f.protein  * r * 10) / 10,
-        carbs:    Math.round(f.carbs    * r * 10) / 10,
-        fat:      Math.round(f.fat      * r * 10) / 10,
-        grams,
-        category: selectedMealCat,
-    });
-    saveAppState();
-    renderCaloricTracker();
-    renderMacros();
-    renderFoodList();
-    renderStatsSection();
-    renderAchievements();
-    hideModal('grams-modal');
-    showToast(`✓ ${grams}g de ${f.name} agregado`);
-    _gramsFood = null;
-}
-
-// ============================================================
-// ESCÁNER DE CÓDIGO DE BARRAS (cámara real con ZXing)
-// ============================================================
-let _scanStream = null;
-let _scanFrame  = null;
-
-async function startBarcodeScanner() {
-    document.getElementById('scanner-modal').classList.add('modal-visible');
-    document.getElementById('scanner-status').textContent = 'Iniciando cámara…';
-    document.getElementById('scanner-error').textContent  = '';
-
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
-        _scanStream = stream;
-        const video = document.getElementById('scanner-video');
-        video.srcObject = stream;
-        video.play();
-        document.getElementById('scanner-status').textContent = 'Apunta al código de barras o QR';
-        scanFrame();
-    } catch(e) {
-        document.getElementById('scanner-error').textContent = '⚠ No se pudo acceder a la cámara. Verifica los permisos del navegador.';
+function validateFoodForm() {
+    clearInputErrors();
+    const name = document.getElementById('food-name').value.trim();
+    const cals = parseInt(document.getElementById('food-cals').value);
+    let valid = true;
+    if (!name) {
+        document.getElementById('food-name').classList.add('input-error');
+        document.getElementById('food-name-error').classList.remove('hidden');
+        valid = false;
     }
-}
-
-function scanFrame() {
-    const video  = document.getElementById('scanner-video');
-    const canvas = document.getElementById('scanner-canvas');
-    if (!video || !canvas) return;
-
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.width  = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        if (window.ZXing) {
-            try {
-                const hints = new Map();
-                hints.set(window.ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-                    window.ZXing.BarcodeFormat.EAN_13,
-                    window.ZXing.BarcodeFormat.EAN_8,
-                    window.ZXing.BarcodeFormat.QR_CODE,
-                    window.ZXing.BarcodeFormat.CODE_128,
-                    window.ZXing.BarcodeFormat.UPC_A,
-                ]);
-                const reader = new window.ZXing.MultiFormatReader();
-                reader.setHints(hints);
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const lum = new window.ZXing.RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
-                const bmp = new window.ZXing.BinaryBitmap(new window.ZXing.HybridBinarizer(lum));
-                const result = reader.decode(bmp);
-                if (result) {
-                    stopBarcodeScanner();
-                    handleBarcodeResult(result.getText());
-                    return;
-                }
-            } catch(e) { /* no code found yet, keep scanning */ }
-        }
+    if (!cals || cals <= 0) {
+        document.getElementById('food-cals').classList.add('input-error');
+        document.getElementById('food-cals-error').classList.remove('hidden');
+        valid = false;
     }
-    _scanFrame = requestAnimationFrame(scanFrame);
+    return valid;
 }
 
-function stopBarcodeScanner() {
-    if (_scanStream) { _scanStream.getTracks().forEach(t => t.stop()); _scanStream = null; }
-    if (_scanFrame)  { cancelAnimationFrame(_scanFrame); _scanFrame = null; }
-    hideModal('scanner-modal');
-}
-
-async function handleBarcodeResult(code) {
-    document.getElementById('scanner-status').textContent = `Código: ${code} — buscando…`;
-    showToast('🔍 Buscando código de barras…');
-    const food = await lookupBarcode(code);
-    if (food) {
-        openGramsModal(food);
-    } else {
-        showToast(`⚠ No se encontró info nutricional para ${code}`, 'error');
-    }
-}
-
+// ---- Exportar CSV ----
+function exportCSV() {
     const rows = [['Fecha', 'Categoría', 'Alimento', 'Calorías (kcal)', 'Proteínas (g)', 'Carbohidratos (g)', 'Grasas (g)']];
     const sortedKeys = Object.keys(appState.history).sort();
     sortedKeys.forEach(key => {
@@ -706,50 +570,77 @@ function initEditFoodModal() {
 function initEventListeners() {
 
     // ---- Buscador Open Food Facts ----
+    let searchTimeout = null;
 
-    // ---- Buscador único (una sola barra, sin duplicados) ----
-    let searchTimer = null;
-    document.getElementById('food-search').addEventListener('input', (e) => {
-        clearTimeout(searchTimer);
-        const q = e.target.value.trim();
-        if (q.length < 2) {
-            document.getElementById('search-results').classList.add('hidden');
+    async function searchFoods(query) {
+        if (query.length < 2) {
+            document.getElementById('food-search-results').classList.add('hidden');
             return;
         }
-        searchTimer = setTimeout(() => runSearch(q), 380);
+        document.getElementById('food-search-spinner').classList.remove('hidden');
+        try {
+            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&lc=es`;
+            const res = await fetch(url);
+            const data = await res.json();
+            renderFoodSearchResults(data.products || []);
+        } catch(e) {
+            console.error('Error buscando alimentos:', e);
+        } finally {
+            document.getElementById('food-search-spinner').classList.add('hidden');
+        }
+    }
+
+    function renderFoodSearchResults(products) {
+        const container = document.getElementById('food-search-results');
+        const valid = products.filter(p => p.product_name && p.nutriments && p.nutriments['energy-kcal_100g'] > 0);
+        if (valid.length === 0) {
+            container.innerHTML = `<div class="px-4 py-3 text-sm text-zinc-500">Sin resultados. Completa los campos manualmente.</div>`;
+            container.classList.remove('hidden');
+            return;
+        }
+        container.innerHTML = valid.map(p => {
+            const name = p.product_name || 'Sin nombre';
+            const brand = p.brands ? `<span class="text-zinc-600"> · ${p.brands.split(',')[0]}</span>` : '';
+            const kcal = Math.round(p.nutriments['energy-kcal_100g'] || 0);
+            const prot = Math.round(p.nutriments['proteins_100g'] || 0);
+            const carbs = Math.round(p.nutriments['carbohydrates_100g'] || 0);
+            const fat = Math.round(p.nutriments['fat_100g'] || 0);
+            return `<button type="button" class="food-search-item w-full text-left px-4 py-2.5 hover:bg-zinc-800 transition-colors border-b border-zinc-800 last:border-0"
+                data-name="${name.replace(/"/g,'&quot;')}" data-kcal="${kcal}" data-prot="${prot}" data-carbs="${carbs}" data-fat="${fat}">
+                <div class="text-sm text-zinc-100 font-medium">${name}${brand}</div>
+                <div class="text-xs text-zinc-500 mt-0.5">${kcal} kcal · ${prot}g prot · ${carbs}g carbs · ${fat}g grasas <span class="text-zinc-600">/ 100g</span></div>
+            </button>`;
+        }).join('');
+        container.classList.remove('hidden');
+
+        container.querySelectorAll('.food-search-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('food-name').value = btn.dataset.name;
+                document.getElementById('food-cals').value = btn.dataset.kcal;
+                document.getElementById('food-protein').value = btn.dataset.prot;
+                document.getElementById('food-carbs').value = btn.dataset.carbs;
+                document.getElementById('food-fat').value = btn.dataset.fat;
+                // Mostrar macros automáticamente
+                document.getElementById('macros-input-row').classList.remove('hidden');
+                document.getElementById('toggle-macros-icon').classList.add('rotate-90');
+                container.classList.add('hidden');
+                document.getElementById('food-search').value = '';
+            });
+        });
+    }
+
+    document.getElementById('food-search').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => searchFoods(e.target.value.trim()), 400);
     });
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('#food-search') && !e.target.closest('#search-results') && !e.target.closest('#btn-barcode-scan')) {
-            document.getElementById('search-results').classList.add('hidden');
+        if (!e.target.closest('#food-search') && !e.target.closest('#food-search-results')) {
+            document.getElementById('food-search-results').classList.add('hidden');
         }
     });
 
-    // ---- Botón escáner de código de barras ----
-    document.getElementById('btn-barcode-scan').addEventListener('click', () => {
-        startBarcodeScanner();
-    });
-
-    document.getElementById('scanner-close-btn').addEventListener('click', () => {
-        stopBarcodeScanner();
-    });
-
-    // ---- Modal de gramos ----
-    document.getElementById('gm-slider').addEventListener('input', (e) => {
-        document.getElementById('gm-grams-num').value = e.target.value;
-        updateGramsCalc(e.target.value);
-    });
-    document.getElementById('gm-grams-num').addEventListener('input', (e) => {
-        const v = Math.min(2000, Math.max(1, parseInt(e.target.value) || 1));
-        document.getElementById('gm-slider').value = Math.min(800, v);
-        updateGramsCalc(v);
-    });
-    document.getElementById('gm-add-btn').addEventListener('click', addFoodFromGramsModal);
-    document.getElementById('gm-close-btn').addEventListener('click', () => hideModal('grams-modal'));
-    document.getElementById('grams-modal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('grams-modal')) hideModal('grams-modal');
-    });
-
+    // Agua
     document.getElementById('btn-add-water').addEventListener('click', () => {
         const key = getTodayKey();
         appState.history[key].water++;
@@ -849,6 +740,19 @@ function initEventListeners() {
     });
 
     // Buscador
+    document.getElementById('food-search').addEventListener('input', (e) => {
+        clearTimeout(searchTimer);
+        const q = e.target.value.trim();
+        if (q.length < 2) { closeSearchResults(); return; }
+        searchTimer = setTimeout(() => runSearch(q), 350);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#food-search') && !e.target.closest('#search-results')) {
+            closeSearchResults();
+        }
+    });
+}
 
 // ============================================================
 // RENDERIZADO
